@@ -1,0 +1,18 @@
+# 제일 작은 수 제거하기
+
+def solution(arr):
+    smallest = arr[0]
+    for i in arr:
+        if i < smallest:
+            smallest = i
+
+    if len(arr) > 1 :
+        arr.remove(smallest)
+        return arr      
+    else:
+        return [-1]
+
+
+#제일 작은 수 부터 구함. : min함수 쓰면 간단한데 전에 코딩도장에서 본 방법 쓰고 싶어서 저렇게 함. 
+#제일 작은 수 smallest 변수에다가 arr리스트의 0번째 값을 할당한다음 배열안의 모든 수를 smallest와 비교해서 smallest보다 작은 값이 있으면 그 값이 smallest가 되는 식.
+#그래서 if문에 len을 써서 [10]이 1자리 수이니까 len(arr) 이 한자리수 넘어가면 smallest뺀값(remove사용.)이 출력되고, 한자리수 가 나오면 [-1]으로 나오게 함.
