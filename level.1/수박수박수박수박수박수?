@@ -1,5 +1,0 @@
-def solution(n):
-    w="수박"
-    line = n * w
-    answer = line[0:n]
-    return answer
