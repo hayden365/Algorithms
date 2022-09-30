@@ -1,0 +1,9 @@
+def solution(s):
+    answer = ''
+    n = len(s)
+    num = int(n) // 2
+    if n % 2 != 0 :
+        answer = s[num]
+    else :
+        answer = s[num-1 : num + 1]
+    return answer
