@@ -1,0 +1,11 @@
+def solution(N, stages):
+    answer = {}
+    s_len = len(stages)
+    for i in range(1, N + 1) :
+        if s_len > 0 :
+            answer[i] = stages.count(i) / s_len
+            s_len -= stages.count(i)
+        else :
+            answer[i] = 0
+    
+    return sorted(answer, key=lambda x : answer[x], reverse=True)

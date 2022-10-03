@@ -1,0 +1,15 @@
+#최대공약수는 두 숫자를 나눠서 나머지가 둘다 0이 되는 숫자를 구함
+#최소공배수는 두 숫자를 곱한 뒤 최대공약수로 나눔.
+
+def solution(n, m):
+    answer = []
+
+    for i in range(1,m + 1) :
+        if(n % i == 0 and m % i == 0):
+            gcd = i
+    answer.append(gcd)
+
+    lcm = n * m // gcd
+    answer.append(lcm)
+
+    return answer

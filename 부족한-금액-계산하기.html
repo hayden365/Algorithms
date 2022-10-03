@@ -1,0 +1,10 @@
+#등차수열의 합 사용
+def solution(price, money, count):
+
+    a = count * (2 * price + (count - 1) * price) // 2
+
+    if a - money > 0 :
+        return a - money
+    else :
+        return 0
+
