@@ -1,0 +1,17 @@
+import itertools
+
+def solution(nums):
+    answer = 0
+    sample_n = itertools.combinations(nums, 3)
+    sett = []
+    for i in sample_n :
+            sn = sum(i)
+            sett.append(sn)
+    for i in sett :
+        b = 0
+        for j in range(1, i+1):
+            if i % j == 0 :
+                b += 1
+        if b == 2 :
+            answer += 1
+    return answer
