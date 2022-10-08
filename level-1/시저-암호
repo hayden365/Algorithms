@@ -1,0 +1,17 @@
+def solution(s, n):
+    answer = ''
+    s = list(s)
+    up = list(map(chr, range(65, 91)))
+    down = list(map(chr, range(97, 123)))
+
+    for i in range(len(s)) :
+        if s[i].isupper() :
+            num = up.index(s[i]) + n
+            answer += up[num % 26]
+        elif s[i].islower() :
+            num = down.index(s[i]) + n
+            answer += down[num % 26]
+        else : 
+            answer += " "
+
+    return answer

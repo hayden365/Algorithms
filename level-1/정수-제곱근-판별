@@ -1,0 +1,17 @@
+# 정수 제곱근 판별
+
+```python
+def solution(n):
+    answer = 0
+    dou = n ** 0.5
+    if dou - int(dou) == 0 :
+        answer = (dou + 1) ** 2
+    else :
+        answer = -1
+    
+    return answer
+```
+
+n 의 제곱근 을 dou에 넣음. 
+
+dou 가 정수형이면 정수형인 dou를 뺐을 때 0이 되기 때문에 dou + 1 의 제곱의 수가 나오게 하고, 그 외 소수점이 나오게 되면 -1 을 출력.
