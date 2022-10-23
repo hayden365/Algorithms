@@ -1,0 +1,31 @@
+const { listenerCount } = require('process');
+
+const filepath = process.platform === 'linux' ? '/dev/stdin' : './input.txt';
+const input = require('fs')
+  .readFileSync(filepath)
+  .toString()
+  .trim()
+  .split('\n');
+
+const n = parseInt(input[0]);
+const arr = [];
+for (let i = 1; i <= n; i++) {
+  arr.push(parseInt(input[i]));
+}
+
+for (let i = 0; i < arr.length; i++) {
+  let minindex = i;
+  for (let j = i + 1; j <= arr.length; j++) {
+    if (arr[minindex] >= arr[j]) {
+      minindex = j;
+    }
+  }
+
+  if (minindex != i) {
+    [arr[i], arr[minindex]] = [arr[minindex], arr[i]];
+  }
+}
+
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i]);
+}
