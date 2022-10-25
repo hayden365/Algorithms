@@ -6,6 +6,5 @@ const input = require('fs')
   .split('\n');
 
 input.shift();
-input.join('').split('\r');
 input.sort((a, b) => a - b);
 console.log(input.join('\n'));
