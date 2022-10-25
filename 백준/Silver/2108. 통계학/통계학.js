@@ -30,7 +30,7 @@ for (let key in map) {
 if (array.length > 1) {
   array = array.sort((a, b) => a - b);
   answer.push(array[1]);
-} else answer.push((most = array[0]));
+} else answer.push((mostFrequency = array[0]));
 
 const max = Math.max.apply(null, toNum);
 const min = Math.min.apply(null, toNum);
