@@ -19,7 +19,6 @@ answer.push(midNum[mid]);
 let map = {};
 let array = [];
 
-let N = Number(input.shift());
 for (let num of midNum) {
   if (map[num]) map[num] = map[num] + 1;
   else map[num] = 1;
