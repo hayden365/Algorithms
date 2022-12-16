@@ -1,91 +1,75 @@
-const input = require('fs').readFileSync('/dev/stdin').toString().trim().split('\n');
-const [M, N, H] = input[0].split(' ').map(v => +v);
-const boxes = input.slice(1).reduce((acc, v, i) => {
-  acc[Math.floor(i / N)].push(v.split(' ').map(v => +v));
-  return acc;
-}, [...Array(H)].map(() => []));
-const offsetX = [-1, 1, 0, 0, 0, 0];
-const offsetY = [0, 0, -1, 1, 0, 0];
-const offsetZ = [0, 0, 0, 0, -1, 1];
+const input = require('fs')
+  .readFileSync('/dev/stdin')
+  .toString()
+  .trim()
+  .split('\n')
 
-class Node {
-  constructor(x, y, z, count) {
-    this.prev = null;
-    this.next = null;
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.count = count;
-  }
+const [M, N, H] = input.shift().split(' ').map(Number)
+const tomatos = []
+const ripeTomatosArr = []
+const totalTomatos = N * M * H
+let nRipe = 0
+let nUnRipe = 0
+let nEmpty = 0
+//1. 3차원 배열만들기 접근 순서는 [H][N][M]
+let slicer = 0
+while (slicer < N * H) {
+  tomatos.push(input.slice(slicer, slicer + N).map((str) => str.split(' ').map(Number)))
+  slicer += N
 }
 
-class Queue {
-  constructor() {
-    this.front = null;
-    this.rear = null;
-    this.size = 0;
-  }
-
-  enqueue(x, y, z, count) {
-    const node = new Node(x, y, z, count);
-    if (!this.size) {
-      this.front = node;
-      this.rear = node;
-    } else {
-      this.rear.next = node;
-      node.prev = this.rear;
-      this.rear = node;
-    }
-    this.size++;
-  }
-
-  dequeue() {
-    const node = this.front;
-    if (this.size === 1) {
-      this.front = null;
-      this.rear = null;
-    } else {
-      this.front = node.next;
-      this.front.prev = null;
-    }
-    this.size--;
-    return node;
-  }
-}
-
-const queue = new Queue();
-let output = 0;
-let zeroCount = 0;
-
-for (let z = 0; z < H; z++) {
-  for (let y = 0; y < N; y++) {
-    for (let x = 0; x < M; x++) {
-      if (boxes[z][y][x] === 1) {
-        queue.enqueue(x, y, z, 0);
-      } else if (boxes[z][y][x] === 0) {
-        zeroCount++;
+//2. 익은 토마토 좌표 구하고, 안 익은 토마토 개수 구하기
+for (let floor = 0; floor < H; floor++) {
+  for (let row = 0; row < N; row++) {
+    for (let col = 0; col < M; col++) {
+      const tomato = tomatos[floor][row][col]
+      if (tomato === 1) {
+        nRipe++
+        ripeTomatosArr.push({ floor, row, col, day: 0 })
+      } else if (tomato === 0) {
+        nUnRipe++
+      } else {
+        nEmpty++
       }
     }
   }
 }
 
-while (queue.size) {
-  const { x, y, z, count } = queue.dequeue();
-  offsetZ.forEach((dz, i) => {
-    const nx = x + offsetX[i];
-    const ny = y + offsetY[i];
-    const nz = z + dz;
-    if (boxes[nz]?.[ny]?.[nx] === 0) {
-      boxes[nz][ny][nx] = 1;
-      queue.enqueue(nx, ny, nz, count + 1);
-      zeroCount--;
-      output = Math.max(output, count + 1);
-    }
-  });
+const matrixValidator = (h, n, m) => {
+  return 0 <= h && h < H && 0 <= n && n < N && 0 <= m && m < M
 }
 
-if (zeroCount) {
-  console.log(-1);
-} else {
-  console.log(output);
+const solution = () => {
+  //이미 익어있는 경우
+  if (nRipe === totalTomatos) return 0
+  //그렇지 않은 경우
+  const dFloor = [1, -1, 0, 0, 0, 0]
+  const dRow = [0, 0, 1, 0, -1, 0]
+  const dCol = [0, 0, 0, 1, 0, -1]
+  let pointer = 0
+  let answer = 0
+  while (pointer < ripeTomatosArr.length) {
+    const { floor, row, col, day } = ripeTomatosArr[pointer]
+    for (let i = 0; i < 6; i++) {
+      const nextFloor = dFloor[i] + floor
+      const nextRow = dRow[i] + row
+      const nextCol = dCol[i] + col
+      const nextDay = day + 1
+      if (
+        matrixValidator(nextFloor, nextRow, nextCol) &&
+        tomatos[nextFloor][nextRow][nextCol] === 0
+      ) {
+        tomatos[nextFloor][nextRow][nextCol] = 1
+        ripeTomatosArr.push({ floor: nextFloor, row: nextRow, col: nextCol, day: nextDay })
+        nUnRipe--
+        answer = Math.max(answer, nextDay)
+      }
+    }
+    pointer++
+  }
+  //정답도출
+  if (nUnRipe === 0) return answer
+  return -1
 }
+
+console.log(solution())
