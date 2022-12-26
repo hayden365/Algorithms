@@ -1,77 +1,41 @@
-class Node {
-  constructor(x, y, wall, time) {
-    this.x = x;
-    this.y = y;
-    this.wall = wall;
-    this.time = time;
-    this.next = null;
-  }
-}
-class Queue {
-  constructor() {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-  }
-  push(x, y, wall, time) {
-    let node = new Node(x, y, wall, time);
-    if (this.size === 0) {
-      this.head = node;
-    } else {
-      this.tail.next = node;
-    }
-    this.tail = node;
-    this.size++;
-  }
-  shift() {
-    let temp = this.head;
-    if (this.size === 0) {
-      this.head = null;
-      this.tail = null;
-    } else {
-      this.head = this.head.next;
-    }
-    this.size--;
-    return temp;
-  }
-  length() {
-    return this.size;
-  }
+const filepath = process.platform === 'linux' ? '/dev/stdin' : '그래프 순회/input.txt';
+let input = require('fs').readFileSync(filepath).toString().trim().split('\n');
+
+let [n, m] = input[0].split(' ').map(v => Number(v));
+let visited = Array.from(Array(2), () => Array.from(Array(n), () => Array(m).fill(0)));
+
+let graph = [];
+for (let i = 1; i < input.length; i++) {
+	let temp = input[i].split('').map(v => Number(v));
+	graph.push(temp);
 }
 
-const fs = require('fs');
-const filePath = process.platform === 'linux' ? '/dev/stdin' : 'input.txt';
-let input = fs.readFileSync(filePath).toString().trim().split('\n');
+bfs();
+if (visited[0][n - 1][m - 1] === 0 && visited[1][n - 1][m - 1] === 0) console.log(-1);
+else if (visited[0][n - 1][m - 1] === 0) console.log(visited[1][n - 1][m - 1]);
+else if (visited[1][n - 1][m - 1] === 0) console.log(visited[0][n - 1][m - 1]);
+else console.log(Math.min(visited[0][n - 1][m - 1], visited[1][n - 1][m - 1]));
 
-const [N, M] = input.shift().split(' ').map(Number);
-const arr = input.map((i) => i.trim().split('').map(Number));
-const visited = Array.from({ length: N }, () => Array.from({ length: M }, () => Array.from({ length: 2 }, () => false)));
-const dx = [0, 0, 1, -1];
-const dy = [1, -1, 0, 0];
-
-let queue = new Queue();
-queue.push(0, 0, true, 1);
-let ans = -1;
-while (queue.length()) {
-  let cur = queue.shift();
-  const [x, y, canBreak, time] = [cur.x, cur.y, cur.wall, cur.time];
-  if (x === N - 1 && y === M - 1) {
-    ans = time;
-    break;
-  }
-
-  if (visited[x][y][canBreak]) continue;
-  visited[x][y][canBreak] = true;
-
-  for (let i = 0; i < 4; i++) {
-    let [nx, ny, ntime, nextCanBreak] = [x + dx[i], y + dy[i], time + 1, canBreak];
-    if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
-
-    if (arr[nx][ny]) {
-      if (nextCanBreak) nextCanBreak = false;
-      else continue;
-    }
-    queue.push(nx, ny, nextCanBreak, ntime);
-  }
+function bfs() {
+	const dx = [-1, 0, 1, 0];
+	const dy = [0, 1, 0, -1];
+	let q = [[0, 0, 1]];
+	visited[1][0][0] = 1;
+	let idx = 0;
+	while (q.length !== idx) {
+		let [x, y, c] = q[idx];
+		for (let i = 0; i < 4; i++) {
+			let nx = x + dx[i];
+			let ny = y + dy[i];
+			if (0 > nx || nx >= n || 0 > ny || ny >= m) continue;
+			if (graph[nx][ny] === 1 && c === 1) {
+				visited[0][nx][ny] = visited[c][x][y] + 1;
+				q.push([nx, ny, 0]);
+			} else if (graph[nx][ny] === 0 && visited[c][nx][ny] === 0) {
+				visited[c][nx][ny] = visited[c][x][y] + 1;
+				q.push([nx, ny, c]);
+			}
+		}
+		idx++;
+	}
 }
-console.log(ans);
