@@ -7,6 +7,6 @@ for i in range(1, len(data)):
   if num <= 1 or result <= 1:
     result += num
   else:
-    result += num
+    result *= num
 
 print(result)
